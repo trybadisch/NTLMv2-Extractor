@@ -2,7 +2,7 @@ import pyshark
 import sys
 
 if len(sys.argv) != 3:
-    print("[!] Usage: ./"+sys.argv[0]+" pcap_file output_file")
+    print('[!] Usage: ./'+sys.argv[0]+' pcap_file output_file')
     sys.exit()
 
 filename = sys.argv[1]
@@ -15,12 +15,12 @@ for packet in cap:
     try:
         if hasattr(packet, 'ntlmssp_messagetype'):
             # NTLM server challenge
-            if packet.ntlmssp_messagetype == "0x00000002":
+            if packet.ntlmssp_messagetype == '0x00000002':
                 challenge = packet.ntlmssp_ntlmserverchallenge.replace(':', '')
                 request = packet.request_in
             
             # NTLM client response (tracked by request)
-            if packet.ntlmssp_messagetype == "0x00000003" and packet.prev_request_in == request:
+            if packet.ntlmssp_messagetype == '0x00000003' and packet.prev_request_in == request:
                 username = packet.ntlmssp_auth_username
                 domain = packet.ntlmssp_auth_domain
                 hmac = packet.ntlmssp_ntlmv2_response_ntproofstr.replace(':', '')
@@ -38,8 +38,11 @@ for packet in cap:
 
 hashes = set(hashes)
 
-print('\n[*] '+str(len(hashes))+' hashes found:')
-with open(output, 'w') as file:
-    for hash in hashes:
-        file.write(hash+'\n')
-        print(hash)
+if len(hashes) != 0:
+    print('\n[*] '+str(len(hashes))+' hashes found:')
+    with open(output, 'w') as file:
+        for hash in hashes:
+            file.write(hash+'\n')
+            print(hash)
+else:
+    print('No NTLMv2 hashes found.')
