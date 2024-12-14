@@ -1,5 +1,5 @@
 # NTLMv2-Extractor
-Tool to extract NTLMv2 hashes from PCAP files in hashcat format.
+Tool to extract NTLMv2 hashes from PCAP files in hashcat format using pyshark.
 
 ## Usage:
 ```shell
